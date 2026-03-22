@@ -13,7 +13,7 @@ class HebbianWeather:
 
         for pattern, bipolar_label in zip(patterns, bipolar_labels):
             self.weights += bipolar_label * pattern * self.learning_rate
-            self.bias += bipolar_label
+            self.bias += bipolar_label * self.learning_rate
 
         scores = []
         for pattern in patterns:
