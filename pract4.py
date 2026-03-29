@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-
+from sklearn.cluster import KMeans
 
 class RBFNet(nn.Module):
     def __init__(self, in_features, num_centers):
@@ -33,12 +33,18 @@ weather_patterns = torch.tensor([
 
 labels = torch.tensor([[1], [1], [0], [0], [1]], dtype=torch.float32)
 
-model = RBFNet(in_features=4, num_centers=5)
+num_centers = 3
+model = RBFNet(in_features=4, num_centers=num_centers)
+
+kmeans = KMeans(n_clusters=num_centers)
+kmeans.fit(weather_patterns.numpy())
+with torch.no_grad():
+    model.centers.copy_(torch.tensor(kmeans.cluster_centers_, dtype=torch.float32))
 
 criterion = nn.MSELoss()
-optimizer = optim.SGD(model.parameters(), lr=0.1)
-
+optimizer = optim.SGD(model.parameters(), lr=0.5)
 epochs = 200
+
 for epoch in range(epochs):
     y_pred = model(weather_patterns)
     loss = criterion(y_pred, labels)
@@ -51,12 +57,10 @@ with torch.no_grad():
 
 good_scores = [s for s, l in zip(scores, labels) if l == 1]
 bad_scores = [s for s, l in zip(scores, labels) if l == 0]
-
 threshold = (min(good_scores) + max(bad_scores)) / 2
 
 print("Порог:", round(float(threshold), 2))
 print("Очки:", [round(float(s), 2) for s in scores])
-
 
 print("\nРезультаты тестирования:")
 print("Формат: [солнце, облака, ветер, осадки] (1=есть, 0=нет)\n")
