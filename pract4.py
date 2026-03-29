@@ -8,14 +8,14 @@ class RBFNet(nn.Module):
         super().__init__()
         self.num_centers = num_centers
         self.centers = nn.Parameter(torch.randn(num_centers, in_features))
-        self.sigma = 1.0
+        self.spread = 1.0
         self.linear = nn.Linear(num_centers, 1)
 
     def rbf(self, x):
         x = x.unsqueeze(1)
         centers = self.centers.unsqueeze(0)
         distances = torch.sum((x - centers) ** 2, dim=2)
-        return torch.exp(-distances / (2 * self.sigma ** 2))
+        return torch.exp(-distances / (2 * self.spread ** 2))
 
     def forward(self, x):
         x = self.rbf(x)
