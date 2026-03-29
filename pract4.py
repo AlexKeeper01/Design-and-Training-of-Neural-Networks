@@ -44,8 +44,8 @@ optimizer = optim.SGD(model.parameters(), lr=0.1)
 
 epochs = 200
 for epoch in range(epochs):
-    y_pred = model(weather_patterns)   # (5, 1)
-    loss = criterion(y_pred, labels)   # (5, 1)
+    y_pred = model(weather_patterns)
+    loss = criterion(y_pred, labels)
 
     optimizer.zero_grad()
     loss.backward()
