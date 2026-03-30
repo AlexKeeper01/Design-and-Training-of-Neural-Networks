@@ -31,7 +31,7 @@ for epoch in range(epochs):
                     weights[i, j] += learning_rate * influence * (pattern - weights[i, j])
 
     learning_rate *= 0.9
-    radius *= 0.95
+    radius *= 0.9
 
 
 neuron_labels = np.zeros(grid_size)
